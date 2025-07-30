@@ -13,7 +13,7 @@
 
     <!-- Google Fonts (valfritt, för typsnitt) -->
     <link
-      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;200;300;400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
 
@@ -32,9 +32,13 @@
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
     />
   </head>
+
+  
   <body>
-    <h1 id="h1">My Todo App</h1>
-    <div class="container mt-5 mx-auto bg-white border rounded p-3">
+    <h1>My Todo App</h1>
+    
+    <div class="card shadow-sm mx-5 mt-4 p-4">
+      <form id="todoForm">
       <div class="mb-2">
         <label for="title">Title</label>
         <input
@@ -57,13 +61,22 @@
       <div class="row mt-3">
         <div class="col-md-6 mb-3">
           <label for="dueDate" class="form-label">Due date</label>
-          <input type="date" class="form-control" id="dueDate" name="dueDate" />
+          <input 
+          type="date" 
+          class="form-control" 
+          id="dueDate" 
+          name="dueDate" 
+          />
         </div>
         <div class="col-md-6 mb-3">
           <label for="selectPerson" class="form-label"
             >Assign to Person (Optional)</label
           >
-          <select class="form-select" id="selectPerson" name="selectPerson">
+          <select 
+          class="form-select" 
+          id="selectPerson" 
+          name="selectPerson"
+          >
             <option selected disabled>-- Select Person (Optional) --</option>
             <option>Person 1</option>
             <option>Person 2</option>
@@ -79,6 +92,8 @@
             type="file"
             id="attachment"
             name="attachment"
+            multiple
+            onchange="updateAttachmentList()"
           />
           <button
             class="btn btn-outline-secondary bi-x-lg"
@@ -91,19 +106,18 @@
           <ul id="attachmentList" class="list-group mt-5"></ul>
          </div>
         <div class="text-end">
-          <button type="button" class="btn btn-primary mt-3">+ Add Todo</button>
+          <button type="submit" class="btn btn-primary mt-3">+ Add Todo</button>
         </div>
       </div>
+      </form>
     </div>
+    
     
 
 
     <!-- Todo List Section -->
 
-
-
-    <div class="container mt-4 mx-auto bg-white border rounded p-3">
-  <div class="card shadow-sm border-0">
+  <div class="card shadow-sm mx-5 mt-5">
     <!-- Header -->
     <div class="card-header bg-white d-flex justify-content-between align-items-center px-3">
       <h5 class="mb-0">Todos</h5>
@@ -117,48 +131,10 @@
       </div>
     </div>
 
-    <!-- Todo list body -->
-    <div class="card-body p-3">
-      <!-- Single Todo item -->
-      <div class="border rounded p-3 mb-3">
-        <div class="d-flex justify-content-between align-items-center">
-          <div>
-            <h6 class="mb-1">Example Todo</h6>
-            <small class="text-muted">Description goes here</small>
-          </div>
-          
-
-          <!-- Action buttons -->
-          <div class="mt-2 d-flex justify-content-end">
-            <small class="text-muted mx-3">Created: 2025-07-01</small>
-          <button class="btn btn-sm btn-outline-success" title="Mark as Done">
-            <i class="bi bi-check-lg"></i>
-          </button>
-          <button class="btn btn-sm btn-outline-primary" title="Edit">
-            <i class="bi bi-pencil"></i>
-          </button>
-          <button class="btn btn-sm btn-outline-danger" title="Delete">
-            <i class="bi bi-trash"></i>
-          </button>
-        </div>
-        </div>
-
-        <!-- Meta tags -->
-        <div class="mt-2 d-flex flex-wrap gap-2">
-          <span class="bg-white text-secondary">
-            <i class="bi bi-calendar2-day me-1"></i> Due: 2025-07-10
-          </span>
-          <span class="badge bg-info ">
-            <i class="bi bi-person-fill me-1"></i> John Doe
-          </span>
-          <span class="badge bg-secondary">
-            <i class="bi bi-paperclip me-1"></i> 2 attachments
-          </span>
-        </div>
-        
-      </div>
+    <!-- Body -->
+    <div class="card-body" id="todo-list">
+      <!-- Todo items will be dynamically inserted here -->
     </div>
   </div>
-</div>
   </body>
 </html>

@@ -1,4 +1,4 @@
-const data = [
+let data = [
   {
     id: 1,
     title: "Learn JavaScript",
@@ -41,6 +41,7 @@ const data = [
     description: "Build a responsive layout using Bootstrap",
     creationDate: "2025-07-05",
     dueDate: "2025-09-15",
+    person: "Unassigned",
     attachments: [],
   },
 ];
@@ -61,21 +62,88 @@ document.addEventListener("DOMContentLoaded", () => {
   displayTodos(data);
 });
 
-document.addEventListener("DOMContentLoaded", function () {
-  document
-    .getElementById("todoForm")
-    .addEventListener("submit", function (event) {
-      event.preventDefault();
-      validateAndSubmit();
-    });
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("todoForm").addEventListener("submit", (event) => {
+    event.preventDefault();
+    validateAndSubmit();
+  });
 });
+
+document.addEventListener("click", (event) => {
+  const deleteButton = event.target.closest("button[id^='button-delete-']");
+  if (deleteButton) {
+    console.log("Delete button clicked:", deleteButton.id);
+    deleteTodo(event);
+  }
+  const editButton = event.target.closest("button[id^='button-edit-']");
+  if (editButton) {
+    console.log("Edit button clicked:", editButton.id);
+    // Implement edit functionality here if needed
+    editTodo(event);
+  }
+});
+
+function editTodo(event) {
+  console.log("Starting editTodo function");
+  const button = event.target.closest("button");
+  const todoId = button.id.split("-")[2];
+  console.log("Todo ID to edit:", parseInt(todoId));
+  const todo = data.find((todo) => todo.id === parseInt(todoId));
+  if (todo) {
+    console.log("Todo found for editing:", todo);
+    if (document.getElementById("title").value.trim() !== "") {
+      todo.title = document.getElementById("title").value.trim();
+    }
+    console.log(
+      "Type of description:",
+      typeof document.getElementById("description").value.trim()
+    );
+    if (document.getElementById("description").value.trim() !== "") {
+      todo.description = document.getElementById("description").value.trim();
+      console.log("Updated description:", todo.description);
+    }
+    if (document.getElementById("dueDate").value !== "") {
+      todo.dueDate = document.getElementById("dueDate").value;
+    }
+    if (
+      document.getElementById("selectPerson").value.trim() !== "" &&
+      document.getElementById("selectPerson").value.trim() !== "Unassigned" &&
+      document.getElementById("selectPerson").value.trim() !==
+        "-- Select Person (Optional) --"
+    ) {
+      todo.person =
+        document.getElementById("selectPerson").value.trim() || "Unassigned";
+    }
+    // Handle attachments if needed
+    if (document.getElementById("attachment").files.length > 0) {
+      const attachments = document.getElementById("attachment").files;
+      todo.attachments = Array.from(attachments).map((file) => file.name);
+    }
+    displayTodos(data); // Refresh the todo list to reflect changes
+    document.getElementById("todoForm").reset(); // Reset the form
+    clearFile(); // Clear the file input
+  } else {
+    console.error("Todo not found for editing:", todoId);
+  }
+}
+
+function deleteTodo(event) {
+  console.log("Starting deleteTodo function");
+  const button = event.target.closest("button");
+  const todoId = button.id.split("-")[2];
+  console.log("Todo ID to delete:", parseInt(todoId));
+  data = data.filter((todo) => todo.id !== parseInt(todoId));
+  console.log("Updated data after deletion:", data);
+  displayTodos(data);
+}
 
 function validateAndSubmit() {
   const title = document.getElementById("title").value.trim();
   const description = document.getElementById("description").value.trim();
   const dueDate = document.getElementById("dueDate").value;
-  const person = document.getElementById("selectPerson").value.trim();
-  const attachments = document.getElementById("attachment").value.trim();
+  let person = document.getElementById("selectPerson").value.trim();
+  const attachments = document.getElementById("attachment").files;
+  console.log("Attachments:", attachments);
 
   if (
     !title ||
@@ -114,6 +182,11 @@ function validateAndSubmit() {
   console.log(
     `Title: ${title}, Description: ${description}, Due Date: ${dueDate}, Assigned Person: ${person}, Attachments: ${attachments}`
   );
+  
+  if (person === "-- Select Person (Optional) --") {
+    console.log("No person selected, defaulting to 'Unassigned'");
+    person = "Unassigned"; // Default to 'Unassigned' if no person is selected
+  }
 
   let object = data.push({
     id: sequencer(), // Simple ID generation
@@ -130,6 +203,16 @@ function validateAndSubmit() {
   document.getElementById("todoForm").reset(); // Reset the form
   clearFile(); // Clear the file input
 }
+
+/*
+function hideTable() {
+    console.log("Hiding table");
+    const tableElement = document.getElementById("dynamicTable");
+    if(tableElement) {
+        tableElement.remove();
+    }
+}
+*/
 
 function displayTodos(data) {
   console.log("Displaying todos:", data);
@@ -227,47 +310,3 @@ function displayTodos(data) {
     document.getElementById("todo-list").appendChild(listItem);
   }
 }
-
-/*
-<!-- Todo list body -->
-    <div id="card-body" class="card-body">
-      <!-- Single Todo item -->
-      <div class="border rounded p-3 mb-3">
-        <div class="d-flex justify-content-between align-items-center">
-          <div>
-            <h6 id="card-title" class="mb-1">Example Todo</h6>
-            <small id="card-description" class="text-muted">Description goes here</small>
-          </div>
-          
-
-          <!-- Action buttons -->
-          <div class="d-flex justify-content-end">
-            <small id="card-creationDate" class="text-muted mx-3">Created: 2025-07-01</small>
-          <button id="button-done" class="btn btn-sm btn-outline-success" title="Mark as Done">
-            <i class="bi bi-check-lg"></i>
-          </button>
-          <button id="button-edit" class="btn btn-sm btn-outline-primary" title="Edit">
-            <i class="bi bi-pencil"></i>
-          </button>
-          <button id="button-delete" class="btn btn-sm btn-outline-danger" title="Delete">
-            <i class="bi bi-trash"></i>
-          </button>
-        </div>
-        </div>
-
-        <!-- Meta tags -->
-        <div class="mt-2 d-flex flex-wrap gap-2">
-          <span class="bg-white text-secondary">
-            <i class="bi bi-calendar2-day me-1"></i> Due: 2025-07-10
-          </span>
-          <span class="badge bg-info ">
-            <i class="bi bi-person-fill me-1"></i> John Doe
-          </span>
-          <span class="badge bg-secondary">
-            <i class="bi bi-paperclip me-1"></i> 2 attachments
-          </span>
-        </div>
-      </div>
-    </div>
-  </div>
-  */
